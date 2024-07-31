@@ -6,12 +6,13 @@ let parseData = (d) => {
   let individual = d.arguments[0].results // tak jest to trzymane w message'ach websocketa
   individual.forEach((result) => {
     // result to obecny wynik pojedynczego zawodnika
-    let tmpres = results[result.no] || {} // albo wyciagamy do aktualizacji albo inicjalizujemy pusty obiekt
+    let tmpres = results[result.no+result.nam] || {} // albo wyciagamy do aktualizacji albo inicjalizujemy pusty obiekt
     tmpres.pos = result.pos
     tmpres.nam = result.nam
     tmpres.lsTm = result.lsTm
     tmpres.llap = result.ls // to chyba okresla aktualne okrazenie
     sresults = {
+      ls: result.ls,
       lsTm: result.lsTm,
       s0: result.s0,
       s1: result.s1,
@@ -30,7 +31,7 @@ let parseData = (d) => {
     // tracilibysmy info o ostatnim sektorze albo byloby w niewlasciwym miejscu
     // ale czasem widzialem braki w danych wiec ta * na innym niz ostatni sektor oznacza brak danych
     tmpres[result.ls - 1] = {...sresults, ...tmpres[result.ls - 1]}
-    results[result.no] = tmpres
+    results[result.no+result.nam] = tmpres
   })
 }
 
