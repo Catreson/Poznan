@@ -1,0 +1,68 @@
+.speedhive_container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    padding-top: 56.25%; 
+  }
+  
+  .speedhive {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .speedhive_butts button {
+    background-color: #ffc400; 
+    border: 1px solid #ffc400; 
+    font-weight: bold;
+    color: black;
+    padding: 10px 24px;
+    cursor: pointer;
+    float: left;
+  }
+  
+  .speedhive_butts button:not(:last-child) {
+    border-right: none; 
+  }
+  
+  .speedhive_butts:after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
+  .speedhive_butts button:hover {
+    background-color: #3e8e41;
+  }
+
+  .speedhive_fields {
+    background-color: #ffc40080; 
+    border: 1px solid #ffc400; 
+    color: black;
+    padding: 3px 24px;
+    float: left;
+  }
+
+  .speedhive_fields select {
+    background-color: #ffc400;
+    width: 50%;
+  }
+
+  .speedhive_fields button {
+    background-color: #ffc400; 
+    border: 1px solid #ffc400; 
+    font-weight: bold;
+    color: black;
+    padding: 10px 24px;
+    cursor: pointer;
+    float: right;
+  }
+  
+
+  .speedhive_fields button:hover {
+    background-color: #3e8e41;
+  }
