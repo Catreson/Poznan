@@ -28,7 +28,7 @@ if (!document.getElementById(wId))
     var body  = document.getElementsByTagName('body')[0];
     var wrapper  = document.createElement('div');
     wrapper.id   = wId;
-    wrapper.innerHtml = `<div class="speedhive_fields" style="width:100%;">
+    wrapper.innerHTML = `<div class="speedhive_fields" style="width:100%;">
         <label for="riders" style="width:50%">Rider: </label>
         <select name="riders" id="riders" onclick="UpdateRiderOptions()"></select>
         <button style="width:33.3%">Set</button>
@@ -48,7 +48,7 @@ if (!document.getElementById(wId))
               <th>Laptime</th>
             </tr>
           </table> 
-      </div>`
+      </div>`;
     body.insertBefore(wrapper, body.firstChild);
 
 }
