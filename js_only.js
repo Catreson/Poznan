@@ -39,7 +39,7 @@ if (!document.getElementById(wId))
         <button style="width:33.3%" onclick="download(results, 'wyniki.json', 'text/plain');">Download</button>
       </div> 
     <div class="speedhive_table" style="width:100%" id="speedhive_table">
-        <table style="width:100%">
+        <table style="width:100%" id="speedhive_table_content">
             <tr>
               <th>Lap</th>
               <th>Sector 1</th>
@@ -147,8 +147,11 @@ function UpdateRiderOptions() {
 }
 
 function update() {
+  let tmp = document.getElementById("speedhive_table_content");
+  tmp.remove();
   let container = document.getElementById("speedhive_table");
   let dt = document.createElement("table");
+  dt.setAttribute("id", "speedhive_table_content");
   let cols = ['ls', 's0', 's1', 's2', 'lsTm']
   let thead = document.createElement("thead");
   let tr = document.createElement("tr");
@@ -158,7 +161,7 @@ function update() {
     tr.appendChild(th); // Append the header cell to the header row
   });
   thead.appendChild(tr); // Append the header row to the header
-  table.append(tr) // Append the header to the table
+  dt.append(tr) // Append the header to the table
   var sel = document.getElementById("riders");
   results[sel.options[sel.selectedIndex].text].forEach((item) => {
               let tr = document.createElement("tr");
@@ -172,7 +175,7 @@ function update() {
                  td.innerText = elem; // Set the value as the text of the table cell
                  tr.appendChild(td); // Append the table cell to the table row
               });
-              table.appendChild(tr); // Append the table row to the table
+              dt.appendChild(tr); // Append the table row to the table
            });
-           container.appendChild(table) // Append the table to the container element
+           container.appendChild(dt) // Append the table to the container element
 }
