@@ -35,7 +35,7 @@ if (!document.getElementById(wId))
       </div> 
     <div class="speedhive_butts" style="width:100%">
         <button style="width:33.3%" onclick="listen();">Listen</button>
-        <button style="width:33.3%">Update</button>
+        <button style="width:33.3%" onclick="update();">Update</button>
         <button style="width:33.3%" onclick="download(results, 'wyniki.json', 'text/plain');">Download</button>
       </div> 
     <div class="speedhive_table" style="width:100%" id="speedhive_table">
@@ -146,35 +146,33 @@ function UpdateRiderOptions() {
     }
 }
 
-/*var dt = dynamicTable.config('speedhive_table', //table name
-                     ['ls', 's0', 's1', 's2', 'lsTm'], //field names
-                     ['Lap', 'Sector 1', 'Sector 2', 'Sector 3', 'Laptime'], //set to null for field names to be used as header names instead of custom headers
-                     'Puste'); //default text for no items
-                     */
-let dt = document.createElement("table");
-let cols = ['ls', 's0', 's1', 's2', 'lsTm']
-let thead = document.createElement("thead");
-let tr = document.createElement("tr");
-cols.forEach((item) => {
-  let th = document.createElement("th");
-  th.innerText = item; // Set the column name as the text of the header cell
-  tr.appendChild(th); // Append the header cell to the header row
-});
-thead.appendChild(tr); // Append the header row to the header
-table.append(tr) // Append the header to the table
-var sel = document.getElementById("riders");
-results[sel.options[sel.selectedIndex].text].forEach((item) => {
-            let tr = document.createElement("tr");
-            
-            // Get the values of the current object in the JSON data
-            let vals = Object.values(item);
-            
-            // Loop through the values and create table cells
-            vals.forEach((elem) => {
-               let td = document.createElement("td");
-               td.innerText = elem; // Set the value as the text of the table cell
-               tr.appendChild(td); // Append the table cell to the table row
-            });
-            table.appendChild(tr); // Append the table row to the table
-         });
-         container.appendChild(table) // Append the table to the container element
+function update() {
+  let container = document.getElementById("speedhive_table");
+  let dt = document.createElement("table");
+  let cols = ['ls', 's0', 's1', 's2', 'lsTm']
+  let thead = document.createElement("thead");
+  let tr = document.createElement("tr");
+  cols.forEach((item) => {
+    let th = document.createElement("th");
+    th.innerText = item; // Set the column name as the text of the header cell
+    tr.appendChild(th); // Append the header cell to the header row
+  });
+  thead.appendChild(tr); // Append the header row to the header
+  table.append(tr) // Append the header to the table
+  var sel = document.getElementById("riders");
+  results[sel.options[sel.selectedIndex].text].forEach((item) => {
+              let tr = document.createElement("tr");
+
+              // Get the values of the current object in the JSON data
+              let vals = Object.values(item);
+
+              // Loop through the values and create table cells
+              vals.forEach((elem) => {
+                 let td = document.createElement("td");
+                 td.innerText = elem; // Set the value as the text of the table cell
+                 tr.appendChild(td); // Append the table cell to the table row
+              });
+              table.appendChild(tr); // Append the table row to the table
+           });
+           container.appendChild(table) // Append the table to the container element
+}
