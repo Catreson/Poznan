@@ -23,6 +23,7 @@ if (!document.getElementById(cssId))
 
 // adding the upper table
 var wId = 'sHviveTableWrapper';
+var results = {}
 if (!document.getElementById(wId))
 {
     var body  = document.getElementsByTagName('body')[0];
@@ -30,11 +31,12 @@ if (!document.getElementById(wId))
     wrapper.id   = wId;
     wrapper.innerHTML = `<div class="speedhive_fields" style="width:100%;">
         <label for="riders" style="width:50%">Rider: </label>
-        <select name="riders" id="riders" onclick="UpdateRiderOptions()"></select>
-        <button style="width:33.3%">Set</button>
+        <select name="riders" id="riders"></select>
+        <button style="width:33.3%" onclick="UpdateRiderOptions();">Reload riders</button>
+        <button style="width:33.3%" onclick="update();">Set</button>
       </div> 
     <div class="speedhive_butts" style="width:100%">
-        <button style="width:33.3%" onclick="listen();">Listen</button>
+        <button style="width:33.3%" onclick="listen();" id="listen_button">Listen</button>
         <button style="width:33.3%" onclick="update();">Update</button>
         <button style="width:33.3%" onclick="download(results, 'wyniki.json', 'text/plain');">Download</button>
       </div> 
@@ -56,18 +58,26 @@ if (!document.getElementById(wId))
 
 function listen(){
     // inicjalizujemy tablice z wynikami
-    let results = {}
+
 
 // okreslamy funkcje ktora nam aktualizuje te tablice wynikow, jak cos to tutaj mozesz grzebac co wyciagac z danych
+  document.getElementById('listen_button').style.background = "#3e8e41";
     let parseData = (d) => {
         let individual = d.arguments[0].results // tak jest to trzymane w message'ach websocketa
         individual.forEach((result) => {
         // result to obecny wynik pojedynczego zawodnika
-        let tmpres = results[result.no+result.nam] || {} // albo wyciagamy do aktualizacji albo inicjalizujemy pusty obiekt
-        tmpres.pos = result.pos
-        tmpres.nam = result.nam
-        tmpres.lsTm = result.lsTm
-        tmpres.llap = result.ls // to chyba okresla aktualne okrazenie
+        let tmpres = results[result.no+result.nam] || {}; // albo wyciagamy do aktualizacji albo inicjalizujemy pusty obiekt
+        tmpres.pos = result.pos;
+        tmpres.nam = result.nam;
+        tmpres.lsTm = result.lsTm;
+        tmpres.llap = result.ls; // to chyba okresla aktualne okrazenie
+        if (results[result.no+result.nam]){
+          tmpres.laps = results[result.no+result.nam]['laps'];
+        }
+        else {
+          tmpres.laps = {};
+        }
+        
         sresults = {
             ls: result.ls,
             lsTm: result.lsTm,
@@ -76,19 +86,19 @@ function listen(){
             s2: result.s2,
             s3: result.s3,
             s4: result.s4,
-        }
+        };
         // powyzej sa wyniki sektorowe w obecnym momencie, ponizej linijka na wywalenie undefined
         Object.keys(sresults).forEach(key => sresults[key] === undefined ? delete sresults[key] : {});
         // to jest linijka na "wez stare i zaktualizuj o nowe (sresults)"
-        tmpres[result.ls] = {...tmpres[result.ls], ...sresults}
+        tmpres["laps"][result.ls] = {...tmpres["laps"][result.ls], ...sresults};
         // dopisujemy do sresultsow *
         Object.keys(sresults).forEach(key => sresults[key] = `*${sresults[key]}`);
         // uzupelniamy wyniki poprzedniego okrazenia o to, co jest w sresults
         // ogolnie chodzi o to, ze jak jest czas w ostatnim sektorze to juz okrazenie sie zmienia i w efekcie
         // tracilibysmy info o ostatnim sektorze albo byloby w niewlasciwym miejscu
         // ale czasem widzialem braki w danych wiec ta * na innym niz ostatni sektor oznacza brak danych
-        tmpres[result.ls - 1] = {...sresults, ...tmpres[result.ls - 1]}
-        results[result.no+result.nam] = tmpres
+        tmpres["laps"][result.ls - 1] = {...sresults, ...tmpres["laps"][result.ls - 1]};
+        results[result.no+result.nam] = tmpres;
         })
     }
 
@@ -147,35 +157,15 @@ function UpdateRiderOptions() {
 }
 
 function update() {
-  let tmp = document.getElementById("speedhive_table_content");
-  tmp.remove();
-  let container = document.getElementById("speedhive_table");
-  let dt = document.createElement("table");
-  dt.setAttribute("id", "speedhive_table_content");
-  let cols = ['ls', 's0', 's1', 's2', 'lsTm']
-  let thead = document.createElement("thead");
-  let tr = document.createElement("tr");
-  cols.forEach((item) => {
-    let th = document.createElement("th");
-    th.innerText = item; // Set the column name as the text of the header cell
-    tr.appendChild(th); // Append the header cell to the header row
-  });
-  thead.appendChild(tr); // Append the header row to the header
-  dt.append(tr) // Append the header to the table
+  let container = document.getElementById("speedhive_table_content");
+
+  let inner = '<tr><th>ls</th><th>s0</th><th>s1</th><th>s2</th><th>lsTm</th></tr>';
   var sel = document.getElementById("riders");
-  results[sel.options[sel.selectedIndex].text].forEach((item) => {
-              let tr = document.createElement("tr");
-
-              // Get the values of the current object in the JSON data
-              let vals = Object.values(item);
-
-              // Loop through the values and create table cells
-              vals.forEach((elem) => {
-                 let td = document.createElement("td");
-                 td.innerText = elem; // Set the value as the text of the table cell
-                 tr.appendChild(td); // Append the table cell to the table row
-              });
-              dt.appendChild(tr); // Append the table row to the table
+  let laps = results[sel.options[sel.selectedIndex].text]["laps"];
+  console.log(results[sel.options[sel.selectedIndex].text])
+  Object.keys(laps).forEach((key) => {
+              vals = laps[key]
+              inner += `<tr><td>${vals["ls"]}</td><td>${vals["s0"]}</td><td>${vals["s1"]}</td><td>${vals["s2"]}</td><td>${vals["lsTm"]}</td></tr>`;
            });
-           container.appendChild(dt) // Append the table to the container element
+    container.innerHTML = inner;
 }
